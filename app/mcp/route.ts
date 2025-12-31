@@ -1,7 +1,7 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const baseHandler = createMcpHandler(
+const handler = createMcpHandler(
   async (server) => {
     server.tool(
       "amass",
@@ -72,7 +72,9 @@ const baseHandler = createMcpHandler(
           }
         } else if (subcommand === "intel") {
           if (!domain && !intel_organization) {
-            throw new Error("Either domain or organization is required for 'intel' subcommand.");
+            throw new Error(
+              "Either domain or organization is required for 'intel' subcommand."
+            );
           }
           if (domain) {
             args.push("-d", domain);
@@ -109,20 +111,13 @@ const baseHandler = createMcpHandler(
         },
       },
     },
-  } as any,
+  },
   {
     basePath: "",
     verboseLogs: true,
     maxDuration: 60,
-    disableSse: false,
+    disableSse: true,
   }
 );
-
-const handler = async (req: Request) => {
-  const headers = new Headers(req.headers);
-  headers.set("accept", "application/json, text/event-stream");
-  const patched = new Request(req, { headers });
-  return baseHandler(patched);
-};
 
 export { handler as GET, handler as POST, handler as DELETE };
