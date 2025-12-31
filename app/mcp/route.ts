@@ -121,8 +121,10 @@ const baseHandler = createMcpHandler(
 );
 
 const handler = async (req: Request) => {
+  console.log("incoming accept", req.headers.get("accept"));
   const headers = new Headers(req.headers);
   headers.set("accept", "application/json, text/event-stream");
+  console.log("patched accept", headers.get("accept"));
   const patched = new Request(req, { headers });
   return baseHandler(patched);
 };
