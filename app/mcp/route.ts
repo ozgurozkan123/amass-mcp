@@ -103,7 +103,7 @@ const handler = createMcpHandler(
           description: "Advanced subdomain reconnaissance using Amass (returns command to run locally).",
         },
       },
-    },
+    } as any,
   },
   {
     basePath: "",
