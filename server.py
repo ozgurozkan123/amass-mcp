@@ -60,7 +60,8 @@ def amass(
     return f"{note}\n\n{command}"
 
 
+# CRITICAL: Use SSE transport for MCP protocol on container-based platforms
 if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "8000"))
-    mcp.run(transport="http", host=host, port=port, path="/mcp")
+    mcp.run(transport="sse", host=host, port=port, path="/mcp")
