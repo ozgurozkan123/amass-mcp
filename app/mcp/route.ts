@@ -1,7 +1,7 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const baseHandler = createMcpHandler(
+const handler = createMcpHandler(
   async (server) => {
     server.tool(
       "amass",
@@ -87,7 +87,7 @@ const baseHandler = createMcpHandler(
 
         const command = `amass ${args.join(" ")}`;
         const note =
-          "CLI execution is disabled on serverless. Copy this command and run it on a machine with Amass installed.";
+          "CLI execution is disabled on Render serverless. Copy this command and run it on a machine with Amass installed.";
 
         return {
           content: [
@@ -109,7 +109,7 @@ const baseHandler = createMcpHandler(
         },
       },
     },
-  } as any,
+  },
   {
     basePath: "",
     verboseLogs: true,
@@ -117,13 +117,5 @@ const baseHandler = createMcpHandler(
     disableSse: true,
   }
 );
-
-// Ensure Accept header includes both application/json and text/event-stream
-const handler = async (req: Request) => {
-  const headers = new Headers(req.headers);
-  headers.set("accept", "application/json, text/event-stream");
-  const patched = new Request(req, { headers });
-  return baseHandler(patched);
-};
 
 export { handler as GET, handler as POST, handler as DELETE };
