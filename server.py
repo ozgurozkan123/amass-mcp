@@ -61,7 +61,9 @@ def amass(
 
 
 # CRITICAL: Use SSE transport for MCP protocol on container-based platforms
+# Render provides PORT=10000 by default
 if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")
-    port = int(os.environ.get("PORT", "8000"))
+    port = int(os.environ.get("PORT", "10000"))  # Default to Render's port
+    print(f"Starting amass-mcp server on {host}:{port}")
     mcp.run(transport="sse", host=host, port=port, path="/mcp")
