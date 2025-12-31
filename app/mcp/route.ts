@@ -1,7 +1,7 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const baseHandler = createMcpHandler(
+const handler = createMcpHandler(
   async (server) => {
     server.tool(
       "amass",
@@ -15,7 +15,9 @@ const baseHandler = createMcpHandler(
         domain: z
           .string()
           .optional()
-          .describe("Target domain (e.g., example.com). Required for enum; optional for intel."),
+          .describe(
+            "Target domain (e.g., example.com). Required for enum; optional for intel."
+          ),
         intel_whois: z
           .boolean()
           .optional()
@@ -39,7 +41,9 @@ const baseHandler = createMcpHandler(
         enum_brute_wordlist: z
           .string()
           .optional()
-          .describe("Path to custom wordlist for brute force (e.g., '/path/to/wordlist.txt')."),
+          .describe(
+            "Path to custom wordlist for brute force (e.g., '/path/to/wordlist.txt')."
+          ),
       },
       async ({
         subcommand,
@@ -100,10 +104,11 @@ const baseHandler = createMcpHandler(
     capabilities: {
       tools: {
         amass: {
-          description: "Advanced subdomain reconnaissance using Amass (returns command to run locally).",
+          description:
+            "Advanced subdomain reconnaissance using Amass (returns command to run locally).",
         },
       },
-    } as any,
+    },
   },
   {
     basePath: "",
@@ -112,14 +117,5 @@ const baseHandler = createMcpHandler(
     disableSse: true,
   }
 );
-
-const handler = async (req: Request) => {
-  const headers = new Headers(req.headers);
-  const accept = headers.get("accept") || "";
-  if (!accept.includes("application/json")) headers.append("accept", "application/json");
-  if (!accept.includes("text/event-stream")) headers.append("accept", "text/event-stream");
-  const patchedRequest = new Request(req, { headers });
-  return baseHandler(patchedRequest);
-};
 
 export { handler as GET, handler as POST, handler as DELETE };
