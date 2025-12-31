@@ -1,7 +1,10 @@
-FROM node:22-alpine
+FROM node:22-bookworm-slim
 WORKDIR /app
 
-# Install dependencies
+# Install system deps (git for npm, ca-certificates)
+RUN apt-get update && apt-get install -y git ca-certificates && rm -rf /var/lib/apt/lists/*
+
+# Install node dependencies
 COPY package.json package-lock.json* ./
 RUN npm install --production=false
 
@@ -15,5 +18,4 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 EXPOSE 3000
 
-# Start Next.js server
 CMD ["npm", "start", "--", "-H", "0.0.0.0", "-p", "3000"]
