@@ -1,7 +1,7 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const handler = createMcpHandler(
+const baseHandler = createMcpHandler(
   async (server) => {
     server.tool(
       "amass",
@@ -112,5 +112,10 @@ const handler = createMcpHandler(
     disableSse: true,
   }
 );
+
+const handler = async (req: Request) => {
+  console.log("MCP request Accept header:", req.headers.get("accept"));
+  return baseHandler(req);
+};
 
 export { handler as GET, handler as POST, handler as DELETE };
