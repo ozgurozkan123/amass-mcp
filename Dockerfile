@@ -14,8 +14,8 @@ COPY . .
 # Build Next.js app
 RUN npm run build
 
+# Render injects PORT env var - Next.js will use it via -p $PORT
 ENV HOST=0.0.0.0
-ENV PORT=3000
-EXPOSE 3000
 
-CMD ["npm", "start", "--", "-H", "0.0.0.0", "-p", "3000"]
+# Let Render inject the PORT, start with that port
+CMD ["sh", "-c", "npm start -- -H 0.0.0.0 -p ${PORT:-10000}"]
