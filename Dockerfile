@@ -1,21 +1,22 @@
-FROM node:22-bookworm-slim
+FROM python:3.11-slim
+
 WORKDIR /app
 
-# Install system deps (git for npm, ca-certificates)
-RUN apt-get update && apt-get install -y git ca-certificates && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install node dependencies
-COPY package.json package-lock.json* ./
-RUN npm install --production=false
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source
-COPY . .
+# Copy the application
+COPY server.py .
 
-# Build Next.js app
-RUN npm run build
-
-# Render injects PORT env var - Next.js will use it via -p $PORT
+# Set environment variables
 ENV HOST=0.0.0.0
+EXPOSE 8000
 
-# Let Render inject the PORT, start with that port
-CMD ["sh", "-c", "npm start -- -H 0.0.0.0 -p ${PORT:-10000}"]
+# Run the FastMCP server
+CMD ["python", "server.py"]
