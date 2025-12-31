@@ -114,7 +114,7 @@ const baseHandler = createMcpHandler(
     basePath: "",
     verboseLogs: true,
     maxDuration: 60,
-    disableSse: true,
+    disableSse: false,
   }
 );
 
