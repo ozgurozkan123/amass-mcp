@@ -14,9 +14,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application
 COPY server.py .
 
-# Set environment variables
+# Set environment variables - Render provides PORT=10000
 ENV HOST=0.0.0.0
-EXPOSE 8000
+ENV PORT=10000
+EXPOSE 10000
 
 # Run the FastMCP server
 CMD ["python", "server.py"]
