@@ -1,7 +1,7 @@
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const handler = createMcpHandler(
+const baseHandler = createMcpHandler(
   async (server) => {
     server.tool(
       "amass",
@@ -117,5 +117,17 @@ const handler = createMcpHandler(
     disableSse: true,
   }
 );
+
+// Patch Accept header to satisfy clients that don't send both application/json and text/event-stream
+const handler = async (req: Request) => {
+  const accept = req.headers.get("accept") ?? "";
+  if (!accept.includes("text/event-stream")) {
+    const headers = new Headers(req.headers);
+    headers.set("accept", "application/json, text/event-stream");
+    const patched = new Request(req, { headers });
+    return baseHandler(patched);
+  }
+  return baseHandler(req);
+};
 
 export { handler as GET, handler as POST, handler as DELETE };
